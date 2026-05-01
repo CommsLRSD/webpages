@@ -1,0 +1,1021 @@
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap'); .data-hub-wrapper {
+		/* ============================================================ */
+		/* IFRAME ASPECT RATIO - ADJUST THIS TO REMOVE WHITE BARS       */
+		/* ------------------------------------------------------------ */
+		/* PowerBI adds a bottom UI bar, so we need slightly taller than 16:9.
+           - White bars on LEFT/RIGHT? Decrease the second number (e.g. 9.4 -> 9.2)
+           - White bars on TOP/BOTTOM? Increase the second number (e.g. 9.4 -> 9.6)
+           Tweak in 0.1 increments until the dashboard fills perfectly. */
+		--dh-aspect-ratio: 16 / 9.55;
+		/* ============================================================ */
+		--accent-red: #BE5247; --accent-green: #2BA680; --accent-red-light: rgba(190, 82, 71, 0.1); --accent-green-light: rgba(43, 166, 128, 0.1); --bg-primary: #ffffff; --bg-secondary: #f8f9fa; --bg-glass: rgba(255, 255, 255, 0.75); --bg-glass-strong: rgba(255, 255, 255, 0.9); --text-primary: #1a1a2e; --text-secondary: #64748b; --text-muted: #94a3b8; --border-light: rgba(0, 0, 0, 0.06); --border-medium: rgba(0, 0, 0, 0.1); --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.06); --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.08); --shadow-glow-green: 0 4px 20px rgba(43, 166, 128, 0.25); --blur-amount: 20px; --radius: 12px; --radius-lg: 16px; --radius-xl: 20px; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	
+	.data-hub-wrapper,
+	.data-hub-wrapper *,
+	.data-hub-wrapper *::before,
+	.data-hub-wrapper *::after {
+		box-sizing: border-box; min-width: 0;
+	}
+	
+	.data-hub-wrapper * {
+		margin: 0; padding: 0;
+	}
+	
+	.data-hub-wrapper {
+		font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-secondary); color: var(--text-primary); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; width: 100%; max-width: 100%; overflow-x: hidden; contain: layout;
+	}
+	
+	.data-hub-wrapper > * {
+		max-width: 100%; min-width: 0;
+	}
+	
+	.data-hub-wrapper img {
+		max-width: 100%; height: auto;
+	}
+	/* Header - two-column layout: logo left, tagline right */
+	
+	.dh-header {
+		background: var(--bg-glass-strong); backdrop-filter: blur(var(--blur-amount)); -webkit-backdrop-filter: blur(var(--blur-amount)); padding: 2rem; border-bottom: 1px solid var(--border-light); position: relative; width: 100%; max-width: 100%; overflow: hidden;
+	}
+	
+	.dh-header-content {
+		max-width: 1800px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: auto 1fr; gap: 2.5rem; align-items: center;
+	}
+	
+	.dh-logo {
+		display: flex; align-items: center; flex-shrink: 0;
+	}
+	/* Logo images - horizontal shows by default, vertical takes over on narrow screens.
+	   !important is used so the surrounding site/page-builder CSS can't override the show/hide rules. */
+	
+	.dh-logo-img {
+		width: auto !important; display: block;
+	}
+	
+	.dh-logo-img.dh-logo-horizontal {
+		display: block !important; height: 3rem !important; max-width: 100%;
+	}
+	
+	.dh-logo-img.dh-logo-vertical {
+		display: none !important; height: 6rem !important; max-width: 100%;
+	}
+	
+	.dh-tagline {
+		font-size: 1rem; color: var(--text-secondary); font-weight: 400; line-height: 1.6; overflow-wrap: break-word; word-wrap: break-word;
+	}
+	/* Mobile-only help button in the header (hidden on desktop/tablet) */
+	
+	.dh-mobile-help-btn {
+		display: none; width: 38px; height: 38px; border-radius: 50%; background: var(--accent-red) !important; color: #fff !important; border: none !important; font-family: inherit !important; font-size: 1.15rem !important; font-weight: 700 !important; cursor: pointer; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(190, 82, 71, 0.35); padding: 0 !important; line-height: 1;
+	}
+	
+	.dh-mobile-help-btn:hover,
+	.dh-mobile-help-btn:active,
+	.dh-mobile-help-btn:focus {
+		background: #a14338 !important; outline: none;
+	}
+	/* Mobile help modal */
+	
+	.dh-mobile-help-modal {
+		display: none; position: fixed; inset: 0; z-index: 99995; background: rgba(26, 26, 46, 0.6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 1.5rem;
+	}
+	
+	.dh-mobile-help-modal.active {
+		display: flex;
+	}
+	
+	.dh-mobile-help-card {
+		background: white; border-radius: var(--radius-lg); padding: 1.5rem 1.5rem 1.25rem 1.5rem; max-width: 380px; width: 100%; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+	}
+	
+	.dh-mobile-help-card h3 {
+		font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin: 0 0 0.6rem 0;
+	}
+	
+	.dh-mobile-help-card p {
+		font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55; margin: 0 0 1.1rem 0;
+	}
+	
+	.dh-mobile-help-close {
+		display: block; margin-left: auto; background: var(--accent-green) !important; color: #fff !important; border: none !important; font-family: inherit !important; font-size: 0.9rem !important; font-weight: 600 !important; padding: 0.5rem 1.25rem !important; border-radius: var(--radius) !important; cursor: pointer;
+	}
+	
+	.dh-mobile-help-close:hover {
+		background: #259473 !important;
+	}
+	/* Mobile Prompt - friendly suggestion + direct-link option (shown on tablets) */
+	
+	.dh-mobile-prompt {
+		display: none; background: var(--accent-green-light); color: var(--text-primary); padding: 1rem 1.25rem; margin: 1rem 1.5rem 0 1.5rem; text-align: center; font-size: 0.9rem; font-weight: 500; border-radius: var(--radius); border: 1px solid var(--accent-green); line-height: 1.5;
+	}
+	
+	.dh-mobile-prompt strong {
+		display: block; color: var(--accent-green); font-weight: 600; margin-bottom: 0.25rem; font-size: 0.95rem;
+	}
+	
+	.dh-mobile-prompt .dh-direct-link {
+		display: inline-block; margin-top: 0.75rem; background: var(--accent-green); color: white; text-decoration: none; padding: 0.55rem 1.1rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; box-shadow: var(--shadow-glow-green);
+	}
+	
+	.dh-mobile-prompt .dh-direct-link:hover {
+		background: #228b6c;
+	}
+	/* ============================================================ */
+	/* MOBILE DASHBOARD LIST (phones only, ≤600px)                  */
+	/* ============================================================ */
+	
+	.dh-mobile-list {
+		display: none; padding: 0.625rem 0.875rem 1.5rem 0.875rem; width: 100%;
+	}
+	
+	.dh-mobile-list-items {
+		display: flex; flex-direction: column; gap: 0.5rem;
+	}
+	/* Mobile list item - !important locks color/text-decoration so the page builder's
+	   site link styles (which were making text yellow + underlined) cannot win. */
+	
+	.dh-mobile-list-item,
+	.dh-mobile-list-item:link,
+	.dh-mobile-list-item:visited {
+		display: flex !important; align-items: center; gap: 0.85rem; background: var(--bg-primary) !important; border: 1px solid var(--border-light); border-radius: var(--radius); padding: 0.85rem 1rem; text-decoration: none !important; color: var(--text-primary) !important; transition: var(--transition); box-shadow: var(--shadow-soft);
+	}
+	
+	.dh-mobile-list-item:hover,
+	.dh-mobile-list-item:active,
+	.dh-mobile-list-item:focus {
+		border-color: var(--accent-green) !important; background: var(--accent-green-light) !important; color: var(--accent-green) !important; outline: none;
+	}
+	
+	.dh-mobile-list-item img {
+		width: 38px; height: 38px; border-radius: 8px; background: #ffffff; padding: 4px; object-fit: contain; object-position: center; flex-shrink: 0;
+	}
+	
+	.dh-mobile-list-item .dh-mobile-list-text {
+		flex: 1 1 auto; font-size: 0.95rem; font-weight: 600; line-height: 1.3; color: inherit !important;
+	}
+	
+	.dh-mobile-list-item .dh-mobile-list-arrow {
+		color: var(--accent-green) !important; font-size: 1.2rem; flex-shrink: 0;
+	}
+	/* Main Content */
+	
+	.dh-main {
+		display: flex; padding: 1.5rem; gap: 1.5rem; max-width: 1900px; margin: 0 auto; width: 100%; min-width: 0;
+	}
+	/* Viewer */
+	
+	.dh-viewer {
+		flex: 1 1 auto; display: flex; flex-direction: column; background: var(--bg-glass-strong); backdrop-filter: blur(var(--blur-amount)); -webkit-backdrop-filter: blur(var(--blur-amount)); border-radius: var(--radius-xl); border: 1px solid var(--border-light); box-shadow: var(--shadow-medium); overflow: hidden; min-width: 0; max-width: 100%;
+	}
+	
+	.dh-viewer:fullscreen,
+	.dh-viewer:-webkit-full-screen {
+		border-radius: 0; background: var(--bg-primary); width: 100vw; height: 100vh;
+	}
+	
+	.dh-viewer:fullscreen .dh-iframe-wrap iframe,
+	.dh-viewer:-webkit-full-screen .dh-iframe-wrap iframe {
+		border-radius: 0;
+	}
+	
+	.dh-viewer-header {
+		display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: var(--bg-glass); border-bottom: 1px solid var(--border-light); flex-wrap: wrap; gap: 0.75rem; max-width: 100%; min-width: 0;
+	}
+	
+	.dh-report-info {
+		display: flex; align-items: center; gap: 1rem; min-width: 0; flex: 1 1 auto; position: relative; z-index: 100;
+	}
+	/* Custom Dropdown Styling - Now using native <details>/<summary> for page-builder compatibility */
+	
+	.dh-custom-select {
+		position: relative; user-select: none; max-width: 100%;
+	}
+	/* Hide default <summary> disclosure marker */
+	
+	.dh-select-trigger {
+		list-style: none;
+	}
+	
+	.dh-select-trigger::-webkit-details-marker,
+	.dh-select-trigger::marker {
+		display: none;
+	}
+	
+	.dh-select-trigger {
+		display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.5rem; margin-left: -0.5rem; border-radius: var(--radius); transition: var(--transition); background: transparent; border: none; max-width: 100%; text-align: left;
+	}
+	
+	.dh-select-trigger:hover {
+		background: var(--bg-secondary);
+	}
+	
+	.dh-select-trigger:hover .dh-item-text {
+		color: var(--accent-green);
+	}
+	/* Dashboard icon thumbnail - white background, image centered + fully contained.
+	   No border or box-shadow so the icon appears to "float" with no visible container. */
+	
+	.dh-item-icon {
+		width: 40px !important; height: 40px !important; border-radius: 8px; background: #ffffff !important; padding: 6px !important; box-shadow: none !important; border: none !important; object-fit: contain !important; object-position: center center !important; display: block; flex-shrink: 0;
+	}
+	
+	.dh-item-text {
+		font-family: inherit; font-size: 1.25rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; transition: color 0.2s; flex: 1 1 auto;
+	}
+	
+	.dh-chevron {
+		width: 20px; height: 20px; flex-shrink: 0; object-fit: contain; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	
+	.dh-custom-select[open] .dh-chevron {
+		transform: rotate(180deg);
+	}
+	
+	.dh-select-options {
+		position: absolute; top: calc(100% + 5px); left: 0; width: max-content; min-width: 100%; max-width: 90vw; background: var(--bg-glass-strong); backdrop-filter: blur(var(--blur-amount)); -webkit-backdrop-filter: blur(var(--blur-amount)); border: 1px solid var(--border-light); border-radius: var(--radius-lg); box-shadow: var(--shadow-medium); max-height: 50vh; overflow-y: auto; padding: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem; white-space: nowrap;
+	}
+	
+	.dh-option {
+		display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; border-radius: var(--radius); cursor: pointer; transition: var(--transition);
+	}
+	
+	.dh-option:hover {
+		background: var(--bg-secondary);
+	}
+	
+	.dh-option.selected {
+		background: var(--accent-green-light);
+	}
+	
+	.dh-option .dh-item-text {
+		font-size: 1rem; font-weight: 500;
+	}
+	
+	.dh-option.selected .dh-item-text {
+		color: var(--accent-green); font-weight: 600;
+	}
+	
+	.dh-select-options::-webkit-scrollbar {
+		width: 6px;
+	}
+	
+	.dh-select-options::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	
+	.dh-select-options::-webkit-scrollbar-thumb {
+		background: var(--border-medium); border-radius: 3px;
+	}
+	
+	.dh-select-options::-webkit-scrollbar-thumb:hover {
+		background: var(--text-muted);
+	}
+	
+	.dh-report-counter {
+		font-size: 0.8rem; color: var(--text-muted); background: var(--bg-secondary); padding: 0.3rem 0.75rem; border-radius: 50px; font-weight: 500; flex-shrink: 0; white-space: nowrap;
+	}
+	
+	.dh-nav-controls {
+		display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; flex-wrap: wrap;
+	}
+	
+	.dh-nav-arrows {
+		display: flex; gap: 0.4rem;
+	}
+	
+	.dh-arrow-btn {
+		width: 38px; height: 38px; border: 1px solid var(--border-light); background: var(--bg-primary); color: var(--text-primary); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); font-size: 1rem; font-weight: 500; padding: 0; flex-shrink: 0;
+	}
+	
+	.dh-arrow-btn:hover,
+	.dh-arrow-btn:focus {
+		background: var(--accent-green); color: white; border-color: var(--accent-green); box-shadow: var(--shadow-glow-green); outline: none;
+	}
+	
+	.dh-fs-img {
+		width: 22px; height: 22px; object-fit: contain; transition: var(--transition);
+	}
+	
+	.dh-arrow-btn:hover .dh-fs-img,
+	.dh-arrow-btn:focus .dh-fs-img {
+		filter: brightness(0) invert(1);
+	}
+	/* Help button uses the accent-red so it stands out */
+	
+	.dh-help-btn {
+		background: var(--accent-red); color: white; border-color: var(--accent-red); font-weight: 700; font-size: 1.1rem;
+	}
+	
+	.dh-help-btn:hover,
+	.dh-help-btn:focus {
+		background: #a14338; border-color: #a14338; box-shadow: 0 4px 20px rgba(190, 82, 71, 0.35);
+	}
+	/* Iframe wrap - aspect ratio controlled by the variable at the top of this CSS */
+	
+	.dh-iframe-wrap {
+		position: relative; background: transparent; width: 100%; aspect-ratio: var(--dh-aspect-ratio); overflow: hidden;
+	}
+	/* In fullscreen, drop the strict ratio so it fills the user's monitor */
+	
+	.dh-viewer:fullscreen .dh-iframe-wrap,
+	.dh-viewer:-webkit-full-screen .dh-iframe-wrap {
+		aspect-ratio: auto; flex: 1;
+	}
+	
+	.dh-iframe-wrap iframe {
+		position: absolute; top: 0; left: 0; width: 100%; height: 100%; max-width: 100%; border: none; border-radius: 0 0 var(--radius-lg) var(--radius-lg); display: block;
+	}
+	
+	.dh-loading {
+		position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-glass-strong); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+	}
+	
+	.dh-loading.active {
+		opacity: 1; pointer-events: auto;
+	}
+	
+	.dh-spinner {
+		width: 44px; height: 44px; border: 3px solid var(--border-light); border-top-color: var(--accent-green); border-radius: 50%; animation: dh-spin 0.8s linear infinite;
+	}
+	
+	.dh-loading span {
+		font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;
+	}
+	
+	@keyframes dh-spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+	/* Info Panel */
+	
+	.dh-info-panel {
+		background: var(--bg-glass-strong); backdrop-filter: blur(var(--blur-amount)); -webkit-backdrop-filter: blur(var(--blur-amount)); padding: 1.5rem 2rem; border-top: 1px solid var(--border-light); width: 100%; max-width: 100%; overflow: hidden;
+	}
+	
+	.dh-info-grid {
+		max-width: 1800px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; width: 100%;
+	}
+	
+	.dh-info-card {
+		background: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius); border: 1px solid var(--border-light); transition: var(--transition); min-width: 0; max-width: 100%; overflow-wrap: break-word; word-wrap: break-word;
+	}
+	
+	.dh-info-card:hover {
+		box-shadow: var(--shadow-soft); transform: translateY(-2px);
+	}
+	
+	.dh-info-card h4 {
+		font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-red); margin-bottom: 0.5rem; font-weight: 600;
+	}
+	
+	.dh-info-card p {
+		font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; font-weight: 400;
+	}
+	/* ============================================================ */
+	/* SPOTLIGHT TUTORIAL                                           */
+	/* ============================================================ */
+	
+	.dh-tour-backdrop {
+		display: none; position: fixed; inset: 0; z-index: 99990; background: transparent; cursor: pointer;
+	}
+	
+	.dh-tour-backdrop.active {
+		display: block;
+	}
+	/* The spotlight is a transparent box with a HUGE box-shadow that dims everything else */
+	
+	.dh-tour-spotlight {
+		display: none; position: fixed; z-index: 99991; border-radius: 12px; box-shadow: 0 0 0 9999px rgba(26, 26, 46, 0.78), 0 0 0 4px var(--accent-green), 0 0 24px rgba(43, 166, 128, 0.6); pointer-events: none; transition: top 0.35s cubic-bezier(0.4, 0, 0.2, 1), left 0.35s cubic-bezier(0.4, 0, 0.2, 1), width 0.35s cubic-bezier(0.4, 0, 0.2, 1), height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	
+	.dh-tour-spotlight.active {
+		display: block;
+	}
+	
+	.dh-tour-tooltip {
+		display: none; position: fixed; z-index: 99992; max-width: 360px; background: white; border-radius: var(--radius-lg); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3); padding: 1.25rem 1.5rem; font-family: 'Poppins', sans-serif; transition: top 0.35s cubic-bezier(0.4, 0, 0.2, 1), left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	
+	.dh-tour-tooltip.active {
+		display: block;
+	}
+	
+	.dh-tour-tooltip .dh-tour-step {
+		font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-green); font-weight: 700; margin-bottom: 0.4rem;
+	}
+	
+	.dh-tour-tooltip h3 {
+		font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin: 0 0 0.5rem 0;
+	}
+	
+	.dh-tour-tooltip p {
+		font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin: 0 0 1rem 0;
+	}
+	
+	.dh-tour-actions {
+		display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+	}
+	
+	.dh-tour-skip {
+		background: transparent; border: none; color: var(--text-muted); font-family: inherit; font-size: 0.8rem; font-weight: 500; cursor: pointer; padding: 0.4rem 0.5rem; border-radius: 6px; transition: var(--transition);
+	}
+	
+	.dh-tour-skip:hover {
+		color: var(--accent-red); background: var(--accent-red-light);
+	}
+	
+	.dh-tour-nav {
+		display: flex; gap: 0.4rem;
+	}
+	/* Tour buttons - !important added to defeat any inherited site/page-builder styles */
+	
+	.dh-tour-btn {
+		font-family: inherit !important; font-size: 0.85rem !important; font-weight: 600 !important; padding: 0.5rem 1.1rem !important; border-radius: var(--radius) !important; cursor: pointer !important; border: 1px solid var(--border-medium) !important; background: var(--bg-secondary) !important; color: var(--text-primary) !important; text-decoration: none !important; transition: background 0.2s ease, border-color 0.2s ease !important;
+	}
+	
+	.dh-tour-btn:hover:not(:disabled) {
+		background: var(--bg-primary) !important; border-color: var(--text-secondary) !important;
+	}
+	/* Primary (Next/Finish) — solid green, white text. !important locks the colors. */
+	
+	.dh-tour-btn.primary {
+		background: #2BA680 !important; background-color: #2BA680 !important; color: #ffffff !important; border-color: #2BA680 !important;
+	}
+	
+	.dh-tour-btn.primary:hover:not(:disabled) {
+		background: #259473 !important; background-color: #259473 !important; border-color: #259473 !important; color: #ffffff !important;
+	}
+	
+	.dh-tour-btn:disabled {
+		opacity: 0.4 !important; cursor: not-allowed !important;
+	}
+	/* Make the highlighted element appear above the spotlight dimming */
+	
+	.dh-tour-target-highlight {
+		position: relative !important; z-index: 99993 !important;
+	}
+	/* Responsive Breakpoints */
+	
+	@media (max-width: 1200px) {
+		.dh-info-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	
+	@media (max-width: 900px) {
+		.dh-header {
+			padding: 1.5rem;
+		}
+		.dh-header-content {
+			gap: 1.5rem;
+		}
+		/* Tablet - swap to vertical logo */
+		.dh-logo-img.dh-logo-horizontal {
+			display: none !important;
+		}
+		.dh-logo-img.dh-logo-vertical {
+			display: block !important; height: 5.5rem !important;
+		}
+		.dh-main {
+			padding: 0.75rem;
+		}
+		.dh-info-panel {
+			padding: 1.25rem;
+		}
+	}
+	/* Tablet shows the landscape suggestion above the iframe (601-768px) */
+	
+	@media (max-width: 768px) and (min-width: 601px) {
+		.dh-mobile-prompt {
+			display: block;
+		}
+	}
+	/* Phone - replace iframe viewer with a tappable list */
+	
+	@media (max-width: 600px) {
+		.dh-header {
+			padding: 0.625rem 0.875rem 0.625rem 0.875rem;
+		}
+		/* Header on phone: logo left, help button right, tagline spans both columns below */
+		.dh-header-content {
+			grid-template-columns: 1fr auto; gap: 0.4rem 0.75rem; text-align: left; justify-items: stretch; align-items: center;
+		}
+		/* Phone - go BACK to the horizontal logo */
+		.dh-logo-img.dh-logo-horizontal {
+			display: block !important; height: 2.4rem !important;
+		}
+		.dh-logo-img.dh-logo-vertical {
+			display: none !important;
+		}
+		.dh-mobile-help-btn {
+			display: inline-flex;
+		}
+		.dh-tagline {
+			font-size: 0.85rem; text-align: left; grid-column: 1 / -1; line-height: 1.45;
+		}
+		/* Hide the iframe viewer + tablet prompt; show the tappable list instead */
+		.dh-mobile-prompt {
+			display: none !important;
+		}
+		.dh-main {
+			display: none !important;
+		}
+		.dh-mobile-list {
+			display: block !important;
+		}
+		.dh-info-grid {
+			grid-template-columns: 1fr;
+		}
+		.dh-info-panel {
+			padding: 1rem 0.875rem;
+		}
+		.dh-tour-tooltip {
+			max-width: calc(100vw - 2rem);
+		}
+	}
+	
+	@media (max-width: 400px) {
+		.dh-header {
+			padding: 0.5rem 0.625rem;
+		}
+		.dh-logo-img.dh-logo-horizontal {
+			height: 2.1rem !important;
+		}
+		.dh-info-panel {
+			padding: 0.875rem 0.625rem;
+		}
+	}
+
+</style>
+<!-- Spotlight Tutorial Overlay -->
+<div class="dh-tour-backdrop" id="dhTourBackdrop">
+	<br>
+</div>
+<div class="dh-tour-spotlight" id="dhTourSpotlight">
+	<br>
+</div>
+<div class="dh-tour-tooltip" id="dhTourTooltip">
+	<div class="dh-tour-step" id="dhTourStep">Step 1 of 5</div>
+
+	<h3 id="dhTourTitle">Title</h3>
+
+	<p id="dhTourBody">Body text.</p>
+	<div class="dh-tour-actions">
+		<button class="dh-tour-skip" id="dhTourSkip" type="button">Skip tour</button>
+		<div class="dh-tour-nav">
+			<button class="dh-tour-btn" id="dhTourBack" type="button">Back</button>
+			<button class="dh-tour-btn primary" id="dhTourNext" type="button">Next</button>
+		</div></div></div>
+<!-- Mobile help modal (about the dashboard list) -->
+<div class="dh-mobile-help-modal" id="dhMobileHelpModal">
+	<div class="dh-mobile-help-card">
+
+		<h3>About these dashboards</h3>
+
+		<p>These reports are best viewed on a larger screen. Tap any dashboard to open it directly in a new tab for the best mobile viewing experience.</p>
+		<button type="button" class="dh-mobile-help-close" id="dhMobileHelpClose">Got it</button>
+	</div></div>
+<div class="data-hub-wrapper">
+	<header class="dh-header">
+		<div class="dh-header-content">
+			<div class="dh-logo"><img src="https://media.lrsd.net/media/Default/frl/data-hub-logo-4x.05c34f83500.png" alt="Data Hub" class="dh-logo-img dh-logo-horizontal fr-fil fr-dib">&nbsp;<img src="https://media.lrsd.net/media/Default/frl/data-hub-logo-vert-4x.efe78183501.png" alt="Data Hub" class="dh-logo-img dh-logo-vertical fr-fic fr-dii"></div>
+			<button type="button" class="dh-mobile-help-btn" id="dhMobileHelpBtn" title="About these dashboards">?</button>
+
+			<p class="dh-tagline">We are committed to using data to inform decision-making, monitor progress, and share our story with the community. This involves a growth mindset and a solid grounding in data ethics, tools, and processes.</p>
+		</div>
+	</header>
+	<div class="dh-mobile-prompt"><strong>📱 Best viewed in landscape</strong> Rotate your device sideways for the optimal dashboard experience. Or, open the dashboard directly in your browser for full-screen viewing. <a href="https://app.powerbi.com/view?r=eyJrIjoiZTk1NDA0ZWItNGIxMS00MjllLThiYjktZjI0YjMwMDU4ZWIyIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" id="dhDirectLink" class="dh-direct-link" target="_blank" rel="noopener">Open dashboard directly &rarr;</a></div>
+	<!-- Mobile-only dashboard list (auto-populated by JS from the dropdown options) -->
+	<div class="dh-mobile-list" id="dhMobileList">
+		<div class="dh-mobile-list-items" id="dhMobileListItems">
+			<br>
+		</div></div>
+	<div class="dh-main">
+		<main class="dh-viewer" id="dhViewer">
+			<div class="dh-viewer-header">
+				<div class="dh-report-info">
+					<details class="dh-custom-select" id="dhCustomSelect" open="">
+						<summary class="dh-select-trigger" id="dhSelectTrigger"><img src="https://media.lrsd.net/media/Default/frl/learning-indicators-3x.2a12da82676.png" class="dh-item-icon fr-fil fr-dib" id="dhActiveIcon" alt=""> <span class="dh-item-text" id="dhActiveText">Learning, Engagement &amp; Well-Being</span>&nbsp;<img src="https://media.lrsd.net/media/Default/frl/dropdown-arrow.23ae4383430.png" class="dh-chevron fr-fil fr-dib" alt="Dropdown Arrow"></summary>
+						<div class="dh-select-options" id="dhSelectOptions">
+							<div class="dh-option selected" data-index="0" data-url="https://app.powerbi.com/view?r=eyJrIjoiZTk1NDA0ZWItNGIxMS00MjllLThiYjktZjI0YjMwMDU4ZWIyIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Learning, Engagement & Well-Being" data-icon="https://media.lrsd.net/media/Default/frl/learning-indicators-3x.2a12da82676.png"><img src="https://media.lrsd.net/media/Default/frl/learning-indicators-3x.2a12da82676.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Learning, Engagement &amp; Well-Being</span></div>
+							<div class="dh-option" data-index="1" data-url="https://app.powerbi.com/view?r=eyJrIjoiZTNmNTJkMjItMzgzOS00ZjE4LThiMGYtYzNkM2FhYzBhN2FiIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Student Enrolment" data-icon="https://media.lrsd.net/media/Default/frl/student-enrolment-3x.722bba82678.png"><img src="https://media.lrsd.net/media/Default/frl/student-enrolment-3x.722bba82678.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Student Enrolment</span></div>
+							<div class="dh-option" data-index="2" data-url="https://app.powerbi.com/view?r=eyJrIjoiNmQ0NjcxOGEtZjIzYy00MDRjLWI4ZTEtM2Y4YmVmMDEwMjMyIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Class Size Tracker" data-icon="https://media.lrsd.net/media/Default/frl/daily-attendance-3x.08456182680.png"><img src="https://media.lrsd.net/media/Default/frl/class-size-2x.9ea68b83520.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Class Size Tracker</span></div>
+							<div class="dh-option" data-index="3" data-url="https://app.powerbi.com/view?r=eyJrIjoiNjlhNTEzNWEtNTZiYS00ZjY0LTk0ODItYjMzNTk5YjA0MGQyIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Student Diversity" data-icon="https://media.lrsd.net/media/Default/medialib/student-diversity-txt-2x.ebbca062224.png"><img src="https://media.lrsd.net/media/Default/frl/student-diversity-bi-icon.392afe83517.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Student Diversity</span></div>
+							<div class="dh-option" data-index="4" data-url="https://app.powerbi.com/view?r=eyJrIjoiYjJhNzYyZjgtYjE4MC00NDBlLTkwYmQtZDkyMDNiMWI1NDhlIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Daily Attendance Tracker" data-icon="https://media.lrsd.net/media/Default/medialib/daily-attendance-txt-2x.bba5fc62217.png"><img src="https://media.lrsd.net/media/Default/frl/daily-attendance-web-2x.733eb683522.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Daily Attendance Tracker</span></div>
+							<div class="dh-option" data-index="5" data-url="https://app.powerbi.com/view?r=eyJrIjoiZGQ5MWU0MjQtYzQ4MC00YThiLWJhYzgtZmQxMmRjYTgxZDEzIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Student Absence" data-icon="https://media.lrsd.net/media/Default/medialib/student-absense-txt-2x.f092ca62223.png"><img src="https://media.lrsd.net/media/Default/frl/student-abs-web-2x.a541c183527.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Student Absence</span></div>
+							<div class="dh-option" data-index="6" data-url="https://app.powerbi.com/view?r=eyJrIjoiZmJlZjU0MmEtOGFmMC00N2JiLWEzZTgtNzc3MWZhNmY2NjVjIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Student Engagement" data-icon="https://media.lrsd.net/media/Default/frl/0/Student-Engagement%20Dashboard@2x-8.png"><img src="https://media.lrsd.net/media/Default/frl/student-engage-web-2x.6ce43983529.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Student Engagement</span></div>
+							<div class="dh-option" data-index="7" data-url="https://app.powerbi.com/view?r=eyJrIjoiZWIzOWY0MTEtNWIzZC00ZWZjLWIyZTQtNmU5YThhYjJlNDFmIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Social-Emotional Well-Being" data-icon="https://media.lrsd.net/media/Default/frl/0/Social-Emotional%20Well-Being%20Dashboard@2x-8.png"><img src="https://media.lrsd.net/media/Default/frl/social-emo-web-2x.6afc8683530.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Social-Emotional Well-Being</span></div>
+							<div class="dh-option" data-index="8" data-url="https://app.powerbi.com/view?r=eyJrIjoiMTU4ZjY0NjgtODUxMy00NzY4LWJlNDctMGZhYjk4ZjNkMGQ0IiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Impact of Full-Day Kindergarten" data-icon="https://media.lrsd.net/media/Default/frl/0/Impact%20of%20FDK%20dashboard_02@2x-8.png"><img src="https://media.lrsd.net/media/Default/frl/fdk-web-2x.c8981883524.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Impact of Full-Day Kindergarten</span></div>
+							<div class="dh-option" data-index="9" data-url="https://app.powerbi.com/view?r=eyJrIjoiYzhhNjYyY2MtYWU0My00MDllLWExMDQtMDNmYTdjYjkyZWNlIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Grade 9 Credit Attainment" data-icon="https://media.lrsd.net/media/Default/medialib/grade-9-credit-txt-2x.300ebb62218.png"><img src="https://media.lrsd.net/media/Default/frl/gr9-web-2x.a7d1ed83531.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Grade 9 Credit Attainment</span></div>
+							<div class="dh-option" data-index="10" data-url="https://app.powerbi.com/view?r=eyJrIjoiZjAyNGQ4ZWQtMGY5My00NTJlLTlkMTYtMDI2ZjEyZDA2ZTJmIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Graduation Rates" data-icon="https://media.lrsd.net/media/Default/medialib/graduation-rates-txt-2x.be79e562219.png"><img src="https://media.lrsd.net/media/Default/frl/grad-rates-web-2x.d83b2883532.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Graduation Rates</span></div>
+							<div class="dh-option" data-index="11" data-url="https://app.powerbi.com/view?r=eyJrIjoiMDU2NzVhYjctOWQ5OC00YTI5LTk3ZmEtNjIyMDk0ZmVmMDM4IiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9" data-title="Early and Middle Years Provincial Assessments" data-icon="https://media.lrsd.net/media/Default/frl/asset-76-3x.57487f75432.png"><img src="https://media.lrsd.net/media/Default/frl/early-middle-3x.36869683526.png" class="dh-item-icon fr-fil fr-dib" alt=""> <span class="dh-item-text">Early and Middle Years Provincial Assessments</span></div></div>
+					</details>
+				</div>
+				<div class="dh-nav-controls"><span class="dh-report-counter" id="dhCounter">1 / 12</span>
+					<div class="dh-nav-arrows">
+						<button class="dh-arrow-btn" id="dhPrev" title="Previous dashboard">&larr;</button>
+						<button class="dh-arrow-btn" id="dhNext" title="Next dashboard">&rarr;</button>
+						<button class="dh-arrow-btn" id="dhFullscreen" title="Toggle Fullscreen"><img src="https://media.lrsd.net/media/Default/frl/fullscreenicon.f13c4683422.png" alt="Fullscreen Icon" class="dh-fs-img fr-dib"></button>
+						<button class="dh-arrow-btn dh-help-btn" id="dhHelpBtn" type="button" title="Show tutorial">?</button>
+					</div></div></div>
+			<div class="dh-iframe-wrap" id="dhIframeWrap">
+				<iframe name="dhFrame" id="dhFrame" title="Power BI Report" allowfullscreen="" src="https://app.powerbi.com/view?r=eyJrIjoiZTk1NDA0ZWItNGIxMS00MjllLThiYjktZjI0YjMwMDU4ZWIyIiwidCI6IjQ5NTFiMjk4LTEyNDItNDk5Yy04YTNjLWEyMWY4NTkxZmI4OSJ9"></iframe>
+				<div class="dh-loading" id="dhLoading">
+					<div class="dh-spinner">
+						<br>
+					</div><span>Loading Dashboard...</span></div></div>
+		</main>
+	</div>
+	<section class="dh-info-panel">
+		<div class="dh-info-grid">
+			<div class="dh-info-card">
+
+				<h4>Data Informed</h4>
+
+				<p>Using evidence to make decisions with confidence.</p>
+			</div>
+			<div class="dh-info-card">
+
+				<h4>Data Ready</h4>
+
+				<p>Ensuring the right data is available in the right format at the right time.</p>
+			</div>
+			<div class="dh-info-card">
+
+				<h4>Data Efficacious</h4>
+
+				<p>Building the skills to understand and use data effectively.</p>
+			</div>
+			<div class="dh-info-card">
+
+				<h4>Data Stewards</h4>
+
+				<p>Using data ethically as a flashlight, not a hammer&mdash;to help, not harm.</p>
+			</div></div>
+	</section>
+</div>
+<script>
+	(function()
+		{
+			var customSelect = document.getElementById('dhCustomSelect');
+			var optionsElements = document.querySelectorAll('.dh-option');
+			var activeIcon = document.getElementById('dhActiveIcon');
+			var activeText = document.getElementById('dhActiveText');
+
+			var frame = document.getElementById('dhFrame');
+			var counter = document.getElementById('dhCounter');
+			var loading = document.getElementById('dhLoading');
+			var prevBtn = document.getElementById('dhPrev');
+			var nextBtn = document.getElementById('dhNext');
+			var fsBtn = document.getElementById('dhFullscreen');
+			var viewer = document.getElementById('dhViewer');
+			var helpBtn = document.getElementById('dhHelpBtn');
+			var directLink = document.getElementById('dhDirectLink');
+			var iframeWrap = document.getElementById('dhIframeWrap');
+			var mobileListItems = document.getElementById('dhMobileListItems');
+			var mobileHelpBtn = document.getElementById('dhMobileHelpBtn');
+			var mobileHelpModal = document.getElementById('dhMobileHelpModal');
+			var mobileHelpClose = document.getElementById('dhMobileHelpClose');
+
+			var currentIndex = 0;
+			var totalDashboards = optionsElements.length;
+
+			// Build the mobile dashboard list from the existing dropdown options
+				(function buildMobileList()
+			{
+				if (!mobileListItems) return;
+				optionsElements.forEach(function(opt)
+				{
+					var url = opt.getAttribute('data-url');
+					var title = opt.getAttribute('data-title');
+					var icon = opt.getAttribute('data-icon');
+
+					var a = document.createElement('a');
+					a.className = 'dh-mobile-list-item';
+					a.href = url;
+					a.target = '_blank';
+					a.rel = 'noopener';
+
+					var img = document.createElement('img');
+					img.src = icon;
+					img.alt = '';
+
+					var text = document.createElement('span');
+					text.className = 'dh-mobile-list-text';
+					text.textContent = title;
+
+					var arrow = document.createElement('span');
+					arrow.className = 'dh-mobile-list-arrow';
+					arrow.textContent = '↗';
+
+					a.appendChild(img);
+					a.appendChild(text);
+					a.appendChild(arrow);
+					mobileListItems.appendChild(a);
+				});
+			})();
+
+			// Mobile help modal wiring
+			if (mobileHelpBtn && mobileHelpModal && mobileHelpClose)
+			{
+				mobileHelpBtn.addEventListener('click', function()
+				{
+					mobileHelpModal.classList.add('active');
+				});
+				mobileHelpClose.addEventListener('click', function()
+				{
+					mobileHelpModal.classList.remove('active');
+				});
+				mobileHelpModal.addEventListener('click', function(e)
+				{
+					if (e.target === mobileHelpModal) mobileHelpModal.classList.remove('active');
+				});
+			}
+
+			function requestFullscreenSafe(el)
+			{
+				try
+				{
+					if (el.requestFullscreen) el.requestFullscreen();
+					else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+					else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+					else if (el.msRequestFullscreen) el.msRequestFullscreen();
+				}
+				catch (e)
+				{}
+			}
+
+			// Close <details> when clicking outside
+			document.addEventListener('click', function(e)
+			{
+				if (!customSelect.contains(e.target))
+				{
+					customSelect.removeAttribute('open');
+				}
+			});
+
+			function loadDashboard(idx)
+			{
+				if (idx < 0 || idx >= totalDashboards) return;
+
+				currentIndex = idx;
+				var targetOption = optionsElements[idx];
+				var url = targetOption.getAttribute('data-url');
+				var title = targetOption.getAttribute('data-title');
+				var iconSrc = targetOption.getAttribute('data-icon');
+
+				optionsElements.forEach(function(opt)
+				{
+					opt.classList.remove('selected');
+				});
+				targetOption.classList.add('selected');
+
+				activeText.textContent = title;
+				activeIcon.src = iconSrc;
+
+				counter.textContent = (idx + 1) + ' / ' + totalDashboards;
+
+				if (frame.src !== url)
+				{
+					loading.classList.add('active');
+					frame.src = url;
+				}
+
+				if (directLink) directLink.href = url;
+
+				customSelect.removeAttribute('open');
+			}
+
+			frame.onload = function()
+			{
+				loading.classList.remove('active');
+			};
+
+			function nextDashboard()
+			{
+				var newIdx = (currentIndex + 1) % totalDashboards;
+				loadDashboard(newIdx);
+			}
+
+			function prevDashboard()
+			{
+				var newIdx = (currentIndex - 1 + totalDashboards) % totalDashboards;
+				loadDashboard(newIdx);
+			}
+
+			function toggleFullscreen()
+			{
+				var fsElement = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+				if (!fsElement)
+				{
+					requestFullscreenSafe(viewer);
+				}
+				else
+				{
+					if (document.exitFullscreen) document.exitFullscreen();
+					else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+					else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+					else if (document.msExitFullscreen) document.msExitFullscreen();
+				}
+			}
+
+			fsBtn.addEventListener('click', toggleFullscreen);
+
+			optionsElements.forEach(function(option)
+			{
+				option.addEventListener('click', function(e)
+				{
+					e.stopPropagation();
+					var idx = parseInt(this.getAttribute('data-index'), 10);
+					loadDashboard(idx);
+				});
+			});
+
+			prevBtn.addEventListener('click', prevDashboard);
+			nextBtn.addEventListener('click', nextDashboard);
+
+			document.addEventListener('keydown', function(e)
+			{
+				if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+				if (e.key === 'ArrowLeft') prevDashboard();
+				if (e.key === 'ArrowRight') nextDashboard();
+				if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+			});
+
+			// ============================================================
+			// SPOTLIGHT TUTORIAL
+			// ============================================================
+			var tourBackdrop = document.getElementById('dhTourBackdrop');
+			var tourSpotlight = document.getElementById('dhTourSpotlight');
+			var tourTooltip = document.getElementById('dhTourTooltip');
+			var tourStep = document.getElementById('dhTourStep');
+			var tourTitle = document.getElementById('dhTourTitle');
+			var tourBody = document.getElementById('dhTourBody');
+			var tourSkip = document.getElementById('dhTourSkip');
+			var tourBack = document.getElementById('dhTourBack');
+			var tourNext = document.getElementById('dhTourNext');
+
+			var tourSteps = [
+			{
+				targetId: 'dhCustomSelect',
+				title: 'Choose a Dashboard',
+				body: 'Click here to open the menu and pick from any of the 12 available dashboards.'
+			},
+			{
+				targetId: 'dhIframeWrap',
+				title: 'Explore the Dashboard',
+				body: 'This is your Power BI report. Many reports have multiple pages. Use the page navigation built into the report (typically in a sidebar on the left, but in some instances arrows at the bottom of the report) to switch between pages. You can also click directly on many charts, bars, or data points to filter and explore the underlying data in more specific detail.',
+				tooltipPlacement: 'matchPrevTopCenterIframe'
+			},
+			{
+				targetId: 'dhPrev',
+				title: 'Switch Between Dashboards',
+				body: 'Use the left and right arrows to quickly jump to the previous or next dashboard. You can also use the ← and → keys on your keyboard.',
+				targetGroup: ['dhPrev', 'dhNext']
+			},
+			{
+				targetId: 'dhFullscreen',
+				title: 'Go Fullscreen',
+				body: 'Click here to expand the dashboard to fill your entire screen for a focused view. Press Esc or the F key to exit.'
+			},
+			{
+				targetId: 'dhHelpBtn',
+				title: 'Need Help Again?',
+				body: 'Click this Help button anytime to revisit this tour.'
+			}];
+
+			var tourIndex = 0;
+			var tourActive = false;
+			var firstStepTooltipTop = null;
+
+			function getCombinedRect(ids)
+			{
+				var rects = ids.map(function(id)
+				{
+					return document.getElementById(id).getBoundingClientRect();
+				});
+				var top = Math.min.apply(null, rects.map(function(r)
+				{
+					return r.top;
+				}));
+				var left = Math.min.apply(null, rects.map(function(r)
+				{
+					return r.left;
+				}));
+				var right = Math.max.apply(null, rects.map(function(r)
+				{
+					return r.right;
+				}));
+				var bottom = Math.max.apply(null, rects.map(function(r)
+				{
+					return r.bottom;
+				}));
+				return {
+					top: top,
+					left: left,
+					width: right - left,
+					height: bottom - top
+				};
+			}
+
+			function positionSpotlightAndTooltip()
+			{
+				if (!tourActive) return;
+				var step = tourSteps[tourIndex];
+				var ids = step.targetGroup || [step.targetId];
+				var rect = getCombinedRect(ids);
+
+				var pad = 8;
+				tourSpotlight.style.top = (rect.top - pad) + 'px';
+				tourSpotlight.style.left = (rect.left - pad) + 'px';
+				tourSpotlight.style.width = (rect.width + pad * 2) + 'px';
+				tourSpotlight.style.height = (rect.height + pad * 2) + 'px';
+
+				var tooltipRect = tourTooltip.getBoundingClientRect();
+				var tooltipH = tooltipRect.height || 200;
+				var tooltipW = tooltipRect.width || 340;
+				var gap = 16;
+				var topPos, leftPos;
+
+				if (step.tooltipPlacement === 'matchPrevTopCenterIframe' && firstStepTooltipTop !== null)
+				{
+					topPos = firstStepTooltipTop;
+					var iframeRect = iframeWrap.getBoundingClientRect();
+					leftPos = iframeRect.left + (iframeRect.width / 2) - (tooltipW / 2);
+				}
+				else
+				{
+					topPos = rect.top + rect.height + pad + gap;
+					if (topPos + tooltipH > window.innerHeight - 10)
+					{
+						topPos = rect.top - pad - gap - tooltipH;
+						if (topPos < 10) topPos = 10;
+					}
+					leftPos = rect.left + (rect.width / 2) - (tooltipW / 2);
+				}
+
+				if (leftPos < 10) leftPos = 10;
+				if (leftPos + tooltipW > window.innerWidth - 10) leftPos = window.innerWidth - tooltipW - 10;
+
+				tourTooltip.style.top = topPos + 'px';
+				tourTooltip.style.left = leftPos + 'px';
+
+				if (tourIndex === 0) firstStepTooltipTop = topPos;
+			}
+
+			function showStep(i)
+			{
+				tourIndex = i;
+				var step = tourSteps[i];
+				tourStep.textContent = 'Step ' + (i + 1) + ' of ' + tourSteps.length;
+				tourTitle.textContent = step.title;
+				tourBody.textContent = step.body;
+				tourBack.disabled = (i === 0);
+				tourNext.textContent = (i === tourSteps.length - 1) ? 'Finish' : 'Next';
+				requestAnimationFrame(positionSpotlightAndTooltip);
+			}
+
+			function startTour()
+			{
+				tourActive = true;
+				firstStepTooltipTop = null;
+				tourBackdrop.classList.add('active');
+				tourSpotlight.classList.add('active');
+				tourTooltip.classList.add('active');
+				showStep(0);
+			}
+
+			function endTour()
+			{
+				tourActive = false;
+				tourBackdrop.classList.remove('active');
+				tourSpotlight.classList.remove('active');
+				tourTooltip.classList.remove('active');
+			}
+
+			helpBtn.addEventListener('click', startTour);
+			tourSkip.addEventListener('click', endTour);
+			tourBackdrop.addEventListener('click', endTour);
+			tourBack.addEventListener('click', function()
+			{
+				if (tourIndex > 0) showStep(tourIndex - 1);
+			});
+			tourNext.addEventListener('click', function()
+			{
+				if (tourIndex < tourSteps.length - 1) showStep(tourIndex + 1);
+				else endTour();
+			});
+			document.addEventListener('keydown', function(e)
+			{
+				if (!tourActive) return;
+				if (e.key === 'Escape') endTour();
+				else if (e.key === 'ArrowRight') tourNext.click();
+				else if (e.key === 'ArrowLeft') tourBack.click();
+			});
+			window.addEventListener('resize', positionSpotlightAndTooltip);
+			window *
+
+</script>
