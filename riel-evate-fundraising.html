@@ -12,6 +12,9 @@
 					<a class="riel-evate-text-link" href="#start-a-fundraiser">Start a fundraiser <span>&darr;</span></a></div></div>
 			<div class="riel-evate-hero-art"><img src="https://media.lrsd.net/media/Default/frl/riel-evate-redguy-4x.f5a26e95854.png" style="width: 300px;" class="fr-fic fr-dib" alt="riel-evate-redguy-4x.f5a26e95854.png"></div>
 		</header>
+		<div class="riel-evate-full-logo">
+			<img src="https://media.lrsd.net/media/Default/frl/asset-3-4x.bc1a8c95850.png" alt="Riel-Evate Endowment Fund">
+		</div>
 		<main>
 			<section class="riel-evate-intro">
 				<div class="riel-evate-intro-copy">
@@ -202,6 +205,18 @@
 	.riel-evate-page .riel-evate-hero-art {
 		position: relative; display: grid; min-height: 300px; place-items: center;
 	}
+
+	.riel-evate-page .riel-evate-hero-art img {
+		max-width: 100%; height: auto;
+	}
+
+	.riel-evate-page .riel-evate-full-logo {
+		display: flex; justify-content: center; margin: 1.5rem auto 0; padding: 1.5rem; border-radius: 12px; background: #f3f6f8;
+	}
+
+	.riel-evate-page .riel-evate-full-logo img {
+		display: block; width: min(320px, 100%); height: auto;
+	}
 	
 	.riel-evate-page .riel-evate-intro {
 		display: grid; grid-template-columns: 1.1fr .9fr; gap: 3rem; align-items: end; padding: 5rem 2rem;
@@ -381,22 +396,30 @@
 		outline: 3px solid var(--riel-gold); outline-offset: 4px;
 	}
 	
-	@media (max-width: 760px) {
+	@media (max-width: 900px) {
 		.riel-evate-page .riel-evate-shell {
 			padding: .75rem .75rem 1.5rem;
 		}
 		.riel-evate-page .riel-evate-hero {
-			grid-template-columns: 1fr; padding: 2.5rem 1.5rem 1rem;
+			grid-template-columns: minmax(0, 1fr); padding: 2.5rem 1.5rem 1rem;
 		}
 		.riel-evate-page .riel-evate-hero-art {
 			min-height: 200px; margin-top: 1rem;
 		}
 		.riel-evate-page .riel-evate-intro,
+		.riel-evate-page .riel-evate-fundraiser,
+		.riel-evate-page .riel-evate-scholarships {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.riel-evate-page .riel-evate-intro,
 		.riel-evate-page .riel-evate-fundraiser {
-			grid-template-columns: 1fr; gap: 1.2rem; padding: 3.5rem 1rem;
+			gap: 1.2rem; padding: 3.5rem 1rem;
 		}
 		.riel-evate-page .riel-evate-scholarships {
-			grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem;
+			gap: 1.5rem; padding: 1.5rem;
+		}
+		.riel-evate-page .riel-evate-full-logo {
+			margin-top: .75rem; padding: 1rem;
 		}
 		.riel-evate-page .riel-evate-scholarship-stat {
 			justify-self: start;
