@@ -396,7 +396,7 @@
 		outline: 3px solid var(--riel-gold); outline-offset: 4px;
 	}
 	
-	@media (max-width: 1440px) {
+	@media (max-width: 1300px) {
 		.riel-evate-page .riel-evate-shell {
 			padding: .75rem .75rem 1.5rem;
 		}
@@ -407,7 +407,13 @@
 			display: none;
 		}
 		.riel-evate-page .riel-evate-actions {
-			align-items: flex-start; flex-direction: column;
+			align-items: center; flex-wrap: nowrap;
+		}
+		.riel-evate-page .riel-evate-actions .riel-evate-button {
+			flex: 0 0 auto; width: auto;
+		}
+		.riel-evate-page .riel-evate-text-link {
+			flex: 1 1 auto; min-width: 0;
 		}
 		.riel-evate-page .riel-evate-intro,
 		.riel-evate-page .riel-evate-fundraiser,
